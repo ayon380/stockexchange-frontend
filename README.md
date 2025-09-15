@@ -1,36 +1,206 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# StockExchange Frontend
 
-## Getting Started
+A modern stock trading dashboard with authentication, 2FA, and real-time data visualization.
 
-First, run the development server:
+## Features
+
+- **User Authentication**: Secure login/signup with JWT tokens
+- **Two-Factor Authentication**: TOTP-based 2FA with backup codes
+- **Real-time Dashboard**: Live stock price updates and market index
+- **PostgreSQL Database**: User data and session storage
+- **Redis Integration**: Session management and trading token storage
+- **Responsive Design**: Clean UI that adapts to system theme
+- **TypeScript**: Full type safety throughout the application
+
+## Setup Instructions
+
+### 1. Database Setup
+
+#### PostgreSQL Installation
+```bash
+# Install PostgreSQL (Ubuntu/Debian)
+sudo apt-get install postgresql postgresql-contrib
+
+# Install PostgreSQL (macOS with Homebrew)
+brew install postgresql
+brew services start postgresql
+
+# Install PostgreSQL (Windows)
+# Download from: https://www.postgresql.org/download/windows/
+```
+
+#### Create Database
+```bash
+# Login to PostgreSQL
+sudo -u postgres psql
+
+# Create database and user
+CREATE DATABASE stockexchange;
+CREATE USER stockuser WITH PASSWORD 'your_password';
+GRANT ALL PRIVILEGES ON DATABASE stockexchange TO stockuser;
+\q
+```
+
+#### Run Schema
+```bash
+# Connect to database
+psql -d stockexchange -U stockuser
+
+# Run the schema file
+\i src/lib/schema.sql
+```
+
+### 2. Redis Setup
+
+#### Redis Installation
+```bash
+# Install Redis (Ubuntu/Debian)
+sudo apt-get install redis-server
+sudo systemctl start redis-server
+
+# Install Redis (macOS with Homebrew)
+brew install redis
+brew services start redis
+
+# Install Redis (Windows)
+# Download from: https://redis.io/download
+```
+
+### 3. Environment Configuration
+
+Copy the example environment file:
+```bash
+cp .env.example .env.local
+```
+
+Update the following variables in `.env.local`:
+```env
+# Database
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=stockexchange
+DB_USER=stockuser
+DB_PASSWORD=your_password
+
+# Redis
+REDIS_HOST=localhost
+REDIS_PORT=6379
+REDIS_PASSWORD=
+REDIS_DB=0
+
+# JWT (Generate secure random strings)
+JWT_SECRET=your-super-secret-jwt-key-here
+JWT_REFRESH_SECRET=your-refresh-secret-key-here
+```
+
+### 4. Install Dependencies
+
+```bash
+npm install
+```
+
+### 5. Run the Application
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The application will be available at `http://localhost:3000`
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## API Endpoints
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Authentication
+- `POST /api/auth/signup` - User registration
+- `POST /api/auth/login` - User login
+- `POST /api/auth/2fa` - Setup 2FA
+- `PUT /api/auth/2fa` - Enable/disable 2FA
 
-## Learn More
+### Pages
+- `/login` - Login page
+- `/signup` - Registration page
+- `/app` - Main dashboard
 
-To learn more about Next.js, take a look at the following resources:
+## Token Management
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Session Token
+- **Purpose**: General session management
+- **Expiry**: 15 days
+- **Storage**: Database + Client localStorage
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Trading Token
+- **Purpose**: Trading operations and C++ engine authentication
+- **Expiry**: 24 hours
+- **Storage**: Redis (key: `trading:<token>`) + Client localStorage
+- **Redis Data**: Full user object JSON
 
-## Deploy on Vercel
+### Redis Structure
+```
+trading:<token> → {
+  "id": 1,
+  "email": "user@example.com",
+  "firstName": "John",
+  "lastName": "Doe",
+  // ... sanitized user data
+}
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Security Features
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Password Hashing**: bcrypt with 12 salt rounds
+- **JWT Tokens**: Separate session and trading tokens
+- **2FA**: TOTP with backup codes
+- **Input Validation**: Comprehensive form validation
+- **SQL Injection Protection**: Parameterized queries
+- **XSS Protection**: Proper input sanitization
+
+## Development
+
+### Project Structure
+```
+src/
+├── app/
+│   ├── api/auth/          # Authentication API routes
+│   ├── login/             # Login page
+│   ├── signup/            # Signup page
+│   └── app/               # Main dashboard
+├── lib/
+│   ├── auth.ts            # Authentication utilities
+│   ├── db.ts              # Database connection
+│   ├── redis.ts           # Redis connection
+│   ├── types.ts           # TypeScript types
+│   └── schema.sql         # Database schema
+└── components/            # Reusable components
+```
+
+### Key Technologies
+- **Next.js 15**: React framework with App Router
+- **TypeScript**: Type safety
+- **Tailwind CSS**: Styling with dark mode support
+- **PostgreSQL**: Primary database
+- **Redis**: Session and token storage
+- **bcryptjs**: Password hashing
+- **jsonwebtoken**: JWT token management
+- **speakeasy**: 2FA TOTP implementation
+- **Recharts**: Data visualization
+
+## Production Deployment
+
+1. Set up production database and Redis instances
+2. Configure environment variables
+3. Build the application: `npm run build`
+4. Start the application: `npm start`
+5. Set up reverse proxy (nginx) for production
+6. Configure SSL certificates
+7. Set up monitoring and logging
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
+
+## License
+
+This project is licensed under the MIT License.
