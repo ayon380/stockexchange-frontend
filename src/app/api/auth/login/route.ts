@@ -121,7 +121,7 @@ export async function POST(request: NextRequest) {
     await redis.setex(
       `trading:${tokens.tradingToken}`,
       Math.floor(tokens.tradingExpiresIn / 1000),
-      JSON.stringify(userData)
+      String(userData.id)
     );
 
     // Optional: Store user session mapping

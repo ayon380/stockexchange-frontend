@@ -1,5 +1,5 @@
 export interface User {
-  id: number;
+  id: string;
   email: string;
   password_hash: string;
   first_name: string;
@@ -32,7 +32,7 @@ export interface User {
 
 export interface UserSession {
   id: number;
-  user_id: number;
+  user_id: string;
   session_token: string;
   trading_token: string;
   ip_address?: string;

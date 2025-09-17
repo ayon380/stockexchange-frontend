@@ -17,7 +17,7 @@ export class AuthUtils {
     return bcrypt.compare(password, hash);
   }
 
-  static generateSessionToken(userId: number): string {
+  static generateSessionToken(userId: string): string {
     return jwt.sign(
       { userId, type: 'session' },
       JWT_SECRET,
@@ -25,7 +25,7 @@ export class AuthUtils {
     );
   }
 
-  static generateTradingToken(userId: number): string {
+  static generateTradingToken(userId: string): string {
     return jwt.sign(
       { userId, type: 'trading' },
       JWT_SECRET,
@@ -33,9 +33,9 @@ export class AuthUtils {
     );
   }
 
-  static verifyToken(token: string): { userId: number; type: string } | null {
+  static verifyToken(token: string): { userId: string; type: string } | null {
     try {
-      const decoded = jwt.verify(token, JWT_SECRET) as jwt.JwtPayload & { userId: number; type: string };
+      const decoded = jwt.verify(token, JWT_SECRET) as jwt.JwtPayload & { userId: string; type: string };
       return { userId: decoded.userId, type: decoded.type };
     } catch {
       return null;
@@ -118,7 +118,7 @@ export class AuthUtils {
     });
   }
 
-  static generateAuthTokens(userId: number): AuthTokens {
+  static generateAuthTokens(userId: string): AuthTokens {
     const sessionToken = this.generateSessionToken(userId);
     const tradingToken = this.generateTradingToken(userId);
 

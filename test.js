@@ -7,7 +7,7 @@ import Redis from 'ioredis';
 const redis = new Redis({
   host:  'localhost',
   port: 6379,
-  password: 'your_redis_password',
+  // password: 'your_redis_password',
   db: 0,
 });
 
@@ -42,13 +42,11 @@ async function readRedisKeys() {
         console.log(`⏰ TTL: ${ttl} seconds`);
 
         if (key.startsWith('trading:')) {
-          // Parse JSON value for trading tokens
-          try {
-            const parsedValue = JSON.parse(value);
-            console.log('📦 Value (parsed):', JSON.stringify(parsedValue, null, 2));
-          } catch {
-            console.log('📦 Value (raw):', value);
-          }
+          // This key stores user_id (UUID)
+          console.log('👤 User ID (UUID):', value);
+        } else if (key.startsWith('user:') && key.includes(':trading')) {
+          // This key stores trading token
+          console.log('🔐 Trading Token:', value);
         } else {
           console.log('📦 Value:', value);
         }
