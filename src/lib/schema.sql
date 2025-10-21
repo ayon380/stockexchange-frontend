@@ -53,6 +53,26 @@ CREATE INDEX IF NOT EXISTS idx_user_sessions_user_id ON user_sessions(user_id);
 CREATE INDEX IF NOT EXISTS idx_user_sessions_session_token ON user_sessions(session_token);
 CREATE INDEX IF NOT EXISTS idx_user_sessions_trading_token ON user_sessions(trading_token);
 
+-- Create user_accounts table for trading engine
+CREATE TABLE IF NOT EXISTS user_accounts (
+  user_id VARCHAR(50) PRIMARY KEY,
+  cash BIGINT NOT NULL DEFAULT 0,
+  aapl_qty BIGINT NOT NULL DEFAULT 0,
+  googl_qty BIGINT NOT NULL DEFAULT 0,
+  msft_qty BIGINT NOT NULL DEFAULT 0,
+  amzn_qty BIGINT NOT NULL DEFAULT 0,
+  tsla_qty BIGINT NOT NULL DEFAULT 0,
+  buying_power BIGINT NOT NULL DEFAULT 0,
+  day_trading_buying_power BIGINT NOT NULL DEFAULT 0,
+  total_trades BIGINT NOT NULL DEFAULT 0,
+  realized_pnl BIGINT NOT NULL DEFAULT 0,
+  is_active BOOLEAN NOT NULL DEFAULT true,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create index for user_accounts
+CREATE INDEX IF NOT EXISTS idx_user_accounts_user_id ON user_accounts(user_id);
+
 -- Create function to update updated_at timestamp
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
@@ -65,3 +85,4 @@ $$ language 'plpgsql';
 -- Create trigger for users table
 CREATE TRIGGER update_users_updated_at BEFORE UPDATE ON users
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
