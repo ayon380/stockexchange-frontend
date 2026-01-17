@@ -1,6 +1,33 @@
 # StockExchange Frontend
 
+![Next.js](https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js) ![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=for-the-badge&logo=typescript) ![Tailwind](https://img.shields.io/badge/Tailwind_CSS-3.0-38B2AC?style=for-the-badge&logo=tailwind-css) ![License](https://img.shields.io/badge/License-Source_Available-red?style=for-the-badge)
+
+> **Note**: Unlike typical dashboard templates, this frontend is engineered to handle **real-time, high-frequency data streams** from a C++ trading engine (50k+ ops/s). It implements complex state management for live order books, a custom dual-token authentication system with 2FA, and optimizes render performance for rapidly changing market data.
+
+**Architected & Developed by Ayon Sarkar**
+
+---
+
 A modern stock trading dashboard with authentication, 2FA, and real-time data visualization.
+
+## Key Technologies
+
+- **Next.js 15**: React framework with App Router
+- **TypeScript**: Type safety
+- **Tailwind CSS**: Styling with dark mode support
+- **PostgreSQL**: Primary database
+- **Redis**: Session and token storage
+- **bcryptjs**: Password hashing
+- **jsonwebtoken**: JWT token management
+- **speakeasy**: 2FA TOTP implementation
+- **Recharts**: Data visualization
+
+## Technical Highlights
+
+- **Real-Time Performance**: Optimized React components to render high-frequency WebSocket updates (prices, order book depths) without UI freezing.
+- **Robust Security**: Custom implementation of JWT-based authentication with a dual-token strategy (Session vs. Trading tokens) and TOTP 2FA.
+- **Modern Architecture**: Built on Next.js 15 using the App Router, Server Actions, and React Server Components for optimal initial load and SEO.
+- **Type Safety**: End-to-end type safety shared with the backend protocols to ensure reliable data handling.
 
 ## Features
 
@@ -172,16 +199,7 @@ src/
 └── components/            # Reusable components
 ```
 
-### Key Technologies
-- **Next.js 15**: React framework with App Router
-- **TypeScript**: Type safety
-- **Tailwind CSS**: Styling with dark mode support
-- **PostgreSQL**: Primary database
-- **Redis**: Session and token storage
-- **bcryptjs**: Password hashing
-- **jsonwebtoken**: JWT token management
-- **speakeasy**: 2FA TOTP implementation
-- **Recharts**: Data visualization
+
 
 ## Production Deployment
 
@@ -193,14 +211,3 @@ src/
 6. Configure SSL certificates
 7. Set up monitoring and logging
 
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
-
-## License
-
-This project is licensed under the MIT License.
